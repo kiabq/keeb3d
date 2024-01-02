@@ -26,3 +26,4 @@ dist-ssr
 # 3d Models
 *.obj
 *.mtl
+*.glb

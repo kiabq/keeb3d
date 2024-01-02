@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, forwardRef, ReactNode } from 'react';
 import { useLoader } from '@react-three/fiber';
-import { OBJLoader } from 'three/examples/jsm/Addons.js';
+import { OBJLoader, GLTFLoader } from 'three/examples/jsm/Addons.js';
 import type { Object3D } from 'three';
+import * as THREE from 'three';
 
 import * as info from '../assets/keymaps/60_loc.json';
 //! Very important -- make a global map for QK_Keys
@@ -11,8 +12,47 @@ type Keycap = {
     [key: string]: Object3D
 }
 
+
+type Ref = React.MutableRefObject<HTMLCanvasElement>;
+type Props = {
+    children?: ReactNode
+}
+
 //? Attach individual keycaps to a ref? 
-export default function Keycaps() {
+export const Keycaps = forwardRef<Ref, Props>(function Keycaps(props, ref) {
+    let uvArray: any = null;
+    const canvas = ref!.current;
+
+    async function drawLines() {
+        const ctx = canvas.getContext('2d');
+        const canvasSize = 300;
+        canvas.width = canvasSize;
+        canvas.height = canvasSize;
+        const scale = 200;
+
+        ctx.fillStyle = "pink";
+        ctx.fillRect(0, 0, canvasSize, canvasSize);
+
+        ctx.translate(canvas.width / 1.25, canvas.height / 2.5);
+        ctx.scale(-1, 1);
+        ctx.strokeStyle = "orange";
+        ctx.fillStyle = "orange";
+        ctx.font = "20px serif";
+        
+        ctx.moveTo(uvArray[15] * scale, uvArray[15 + 1] * scale);
+        ctx.lineTo(uvArray[16] * scale, uvArray[16 + 1] * scale);
+        ctx.stroke();
+
+        ctx.moveTo(uvArray[16] * scale, uvArray[16 + 1] * scale);
+        ctx.lineTo(uvArray[17] * scale, uvArray[17 + 1] * scale);
+        ctx.stroke();
+
+        ctx.moveTo(uvArray[17] * scale, uvArray[17 + 1] * scale);
+        ctx.lineTo(uvArray[18] * scale, uvArray[18 + 1] * scale);
+        ctx.stroke();
+        ctx.fillText("Hello World!",-50,-50);
+    }
+
     const keys: Keycap = {};
     const R1 = useLoader(OBJLoader, '/R1.obj');
     const R2 = useLoader(OBJLoader, '/R2.obj');
@@ -25,9 +65,10 @@ export default function Keycaps() {
     const LSH225 = useLoader(OBJLoader, '/LSH225.obj');
     const K2 = useLoader(OBJLoader, '/K2.obj');
     const CAP175 = useLoader(OBJLoader, '/CAP175.obj');
+    const R3GLTF = useLoader(GLTFLoader, '/R3.glb');
+    const CASE = useLoader(GLTFLoader, '/case.glb');
     const layout = info.layout;
     const map = key.layers;
-
     const height = 0.019;
     const width = 0.019;
 
@@ -47,7 +88,19 @@ export default function Keycaps() {
         if (key.y === 0) {
             standard = R4;
         } else if (key.y === 1) {
-            standard = R3;
+            standard = R3GLTF.scene;
+            uvArray = standard.children[0].geometry.attributes.uv.array;
+
+            drawLines().then(() => {
+                const texture = new THREE.CanvasTexture(canvas);
+                standard.traverse((child) => {
+                    const object = child.children[0]; 
+
+                    if (object !== undefined && object.isMesh) {
+                        object.material = new THREE.MeshLambertMaterial({ map: texture, emissive: 0x000000 });
+                    }
+                })
+            })
         } else if (key.y === 2) {
             standard = R2;
         } else {
@@ -89,20 +142,29 @@ export default function Keycaps() {
         if (key.w > 1) {
             shift += (key.w - 1) * width;
         }
-    
+
+        clone.position.y = -0.0015 * key.y;
+        if (key.y > 2) {
+            clone.rotation.x = (Math.PI / 2) * 1.975;
+        }
+
         //! please change... I beg of future me
         keys[map[i]] = clone;
     }
+    
+    const keycase = CASE.scene.clone();
+    keycase.rotation.y = (Math.PI / 2) * 2;
+    keycase.position.y = -0.011;
+    keycase.position.x = 0.1325
+    keycase.position.z = 0.0375;
 
     //TODO: Change mapping scheme of keys, right now it's just a simple iterator (not really versatile)
 
     function handleKeyDown(e: KeyboardEvent) {
         e.preventDefault();
 
-        console.log(e.code);
-
         if (typeof keys[e.code] === 'undefined') return;
-        keys[e.code].position.y = -0.01;
+        keys[e.code].position.y -= 0.015;
     }
 
     function handleKeyUp(e: KeyboardEvent) {
@@ -113,6 +175,8 @@ export default function Keycaps() {
     }
 
     useEffect(() => {
+        drawLines();
+
         window.addEventListener('keydown', handleKeyDown);
         window.addEventListener('keyup', handleKeyUp);
 
@@ -124,6 +188,7 @@ export default function Keycaps() {
 
     return (
         <>
+            <primitive object={keycase} />
             {Object.values(keys).map((keycap: Object3D, i: number) => {
                 return (
                     <primitive object={keycap} key={i} />
@@ -131,4 +196,4 @@ export default function Keycaps() {
             })}
         </>
     )
-}
+})
