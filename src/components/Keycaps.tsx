@@ -12,7 +12,6 @@ type Keycap = {
     [key: string]: Object3D
 }
 
-
 type Ref = React.MutableRefObject<HTMLCanvasElement>;
 type Props = {
     children?: ReactNode
@@ -164,7 +163,7 @@ export const Keycaps = forwardRef<Ref, Props>(function Keycaps(props, ref) {
         e.preventDefault();
 
         if (typeof keys[e.code] === 'undefined') return;
-        keys[e.code].position.y -= 0.015;
+        keys[e.code].position.y = -0.015;
     }
 
     function handleKeyUp(e: KeyboardEvent) {
