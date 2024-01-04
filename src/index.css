@@ -2,6 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.test {
-    background-image: radial-gradient(circle at center, green 0, #fff 50%);
+.hero-radial {
+  background-image: radial-gradient(circle at center, #fff0db 0, #fff 80%);
 }
