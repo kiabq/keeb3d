@@ -1,0 +1,9 @@
+# Ignore artifacts:
+build
+coverage
+
+# Models
+.obj
+.mtl
+.glb
+.gltf
