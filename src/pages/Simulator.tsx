@@ -33,8 +33,9 @@ function App() {
   } 
 
   return (
-    <>
-      <canvas height={300} id='canvas-test' ref={testRef}>
+    <div className='h-full w-full relative'>
+      <div className='rounded-t-lg z-[9999] absolute w-80 h-40 bg-blue-500 top-full left-1/2 -translate-x-1/2 -translate-y-full'></div>
+      <canvas height={300} id='canvas-test' className='hidden' ref={testRef}>
         <p>Sorry, your browser doesn't support canvas!</p>
       </canvas>
       <div id="canvas-container" className='w-full h-full'>
@@ -57,7 +58,7 @@ function App() {
           </Scene>
         </Canvas>
       </div>
-    </>
+    </div>
   )
 }
 
