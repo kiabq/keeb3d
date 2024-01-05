@@ -4,9 +4,9 @@ import { OBJLoader, GLTFLoader } from "three/examples/jsm/Addons.js";
 import type { Object3D } from "three";
 import * as THREE from "three";
 
-import * as info from "../assets/keymaps/60_loc.json";
 //! Very important -- make a global map for QK_Keys
-import * as key from "../assets/keymaps/60_map.json";
+import * as info from "@/assets/keymaps/60_loc.json";
+import * as key from "@/assets/keymaps/60_map.json";
 
 type Keycap = {
   [key: string]: Object3D;
@@ -16,7 +16,6 @@ type Ref = React.MutableRefObject<HTMLCanvasElement>;
 type Props = {
   children?: ReactNode;
 };
-
 // TODO: FIX STATE AND REFS
 
 //? Attach individual keycaps to a ref?
@@ -57,7 +56,7 @@ export const Keycaps = forwardRef<Ref, Props>(function Keycaps(props, ref) {
   const keys: Keycap = {};
   const R1 = useLoader(OBJLoader, "/R1.obj");
   const R2 = useLoader(OBJLoader, "/R2.obj");
-  const R3 = useLoader(OBJLoader, "/R3.obj");
+  //   const R3 = useLoader(OBJLoader, "/R3.obj");
   const R4 = useLoader(OBJLoader, "/R4.obj");
   const MOD125 = useLoader(OBJLoader, "/MOD125.obj");
   const MOD150 = useLoader(OBJLoader, "/MOD150.obj");
@@ -70,6 +69,8 @@ export const Keycaps = forwardRef<Ref, Props>(function Keycaps(props, ref) {
   const CASE = useLoader(GLTFLoader, "/case.glb");
   const layout = info.layout;
   const map = key.layers;
+
+  // Dimensions in mm (might change soon?)
   const height = 0.019;
   const width = 0.019;
 
