@@ -4,7 +4,7 @@ import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 
 import type { Mesh } from "three";
 
-import { Keycaps } from "../components/Keycaps";
+import { Keycaps } from "@components/Keycaps";
 
 function App() {
   const testRef = useRef<any>(null!);
