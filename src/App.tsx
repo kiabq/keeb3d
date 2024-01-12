@@ -1,10 +1,34 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 
 import NavItem from "@/components/NavItem";
 
+// function debounce(fn: Function) {
+//   let frame: number;
+//   return (...params: any) => {
+//     if (frame) {
+//       cancelAnimationFrame(frame);
+//     }
+
+//     frame = requestAnimationFrame(() => {
+//       fn(...params);
+//     });
+//   };
+// }
+
 export default function App() {
+  useEffect(() => {
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []) 
+
+  const headerScroll = useRef<HTMLDivElement>(null!);
+
+  function onScroll(e: Event) {
+    headerScroll.current.dataset.scroll = window.scrollY.toString();
+  }
+
   function Box() {
     const meshRef = useRef(null);
 
@@ -19,18 +43,19 @@ export default function App() {
   return (
     <div className="bg-gray h-full text-white">
       <div className="flex flex-col w-[800px] h-full mx-auto py-2 bg-gray">
-        <nav className="flex items-center justify-between p-1 bg-white/50 backdrop-blur-md border-2 rounded-full">
+        <nav ref={headerScroll} data-scroll="0" className={`flex items-center justify-between  mx-auto sticky top-0 p-1 bw-[50%] g-white/50 backdrop-blur-md border-2 z-[9999] [&[data-scroll="0"]]:bg-red-500 [&[data-scroll="0"]]:rounded-full [&[data-scroll="0"]]:w-full [&[data-scroll="0"]]:transition-all transition-all duration-3000`}>
           <NavItem href="/">Home</NavItem>
           {/*
           //? Why is this changing the height of the child elements?
-          //! change later whatever I guess
-        */}
+          //! change later whatever I guess:w
+
+          */}
           <div className="[&>*:nth-child(n+2)]:ml-4">
             <NavItem href="#about">About</NavItem>
             <NavItem href="/simulator">Simulator</NavItem>
           </div>
         </nav>
-        <div className="flex mt-12">
+        <div className="flex mt-12 h-[4000px]">
           <div className="relative text-center">
             <h1 className="font-roboto font-semibold text-3xl">
               Ready to customize a keyboard?
@@ -60,12 +85,12 @@ export default function App() {
         <div className="my-4">
           <div className="flex flex-col h-auto">
             <button className="flex w-full h-3 hover:bg-neutral-400">
-              <span className="h-[2px] my-auto bg-white w-full inline-block"></span>
-            </button>
+              <span className="h-[2px] my-autwaiiiiiio bg-white w-full inline-block"></span>
+            </button>  
             <p>Lorem Ipsum</p>
           </div>
         </div>
-        <div id="footer" className="mt-auto w-full my-4">
+        <footer id="footer" className="mt-auto w-full my-4">
           <div className="flex items-center mb-2">
             <span className="block w-[5%] border-t-[1px]"></span>
             <p className="text-center w-[10%]">keeb3d</p>
@@ -75,7 +100,7 @@ export default function App() {
           <p>Terms of Service</p>
           <p>GitHub</p>
           <p></p>
-        </div>
+        </footer>
       </div>
     </div>
   );

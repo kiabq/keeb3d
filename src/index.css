@@ -2,11 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 
-  font-family: 'Anton', sans-serif;
-  font-family: 'Roboto', sans-serif;
-*/
-
 .hero-radial {
   background-image: radial-gradient(circle at center, #cb7b62 0, #e5a590 80%);
+}
+
+/* nav[data-scroll]:not([data-scroll="0"]) {
+  @apply bg-red-500;
+} */
+
+nav {
+  transition: transform !important;
+  transition-duration: 5s !important;
 }
